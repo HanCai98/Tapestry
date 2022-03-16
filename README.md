@@ -113,3 +113,7 @@ We have  put a lot of effort on the tests for this project. Thus, we have writte
 **node_exit.go: 95.7%**
 
 **routing_table.go: 96.5%**
+
+### Reference
+
+https://sites.cs.ucsb.edu/~ravenben/classes/papers/tapestry-jsac04.pdf
