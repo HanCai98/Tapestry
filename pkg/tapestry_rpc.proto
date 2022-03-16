@@ -1,0 +1,93 @@
+//
+//  Brown University, CS138, Spring 2022
+//
+//  Purpose: Defines the Tapestry RPC protocol using Google's Protocol Buffers
+//  syntax. See https://developers.google.com/protocol-buffers for more details.
+//
+
+syntax = "proto3";
+
+package tapestry;
+
+option go_package = "pkg/pkg";
+
+service TapestryRPC {
+    rpc HelloCaller (NodeMsg) returns (NodeMsg) {}
+    rpc FindRootCaller (IdMsg) returns (RootMsg) {}
+    rpc RegisterCaller (Registration) returns (Ok) {}
+    rpc FetchCaller (Key) returns (FetchedLocations) {}
+    rpc AddNodeCaller (NodeMsg) returns (Neighbors) {}
+    rpc RemoveBadNodesCaller (Neighbors) returns (Ok) {}
+    rpc AddNodeMulticastCaller (MulticastRequest) returns (Neighbors) {}
+    rpc TransferCaller (TransferData) returns (Ok) {}
+    rpc AddBackpointerCaller (NodeMsg) returns (Ok) {}
+    rpc RemoveBackpointerCaller (NodeMsg) returns (Ok) {}
+    rpc GetBackpointersCaller (BackpointerRequest) returns (Neighbors) {}
+    rpc NotifyLeaveCaller (LeaveNotification) returns (Ok) {}
+
+    rpc BlobStoreFetchCaller (Key) returns (DataBlob) {}
+    rpc TapestryStoreCaller (DataBlob) returns (Ok) {}
+    rpc TapestryLookupCaller (Key) returns (Neighbors) {}
+}
+
+message Ok {
+    bool ok = 1;  // Always true
+}
+
+message IdMsg {
+    string id = 1;
+    int32 level = 2;
+}
+
+message DataBlob {
+    bytes data = 1;
+    string key = 2;
+}
+
+message Key {
+    string key = 1;
+}
+
+message NodeMsg {
+    string address = 1;
+    string id = 2;
+}
+
+message RootMsg {
+    NodeMsg next = 1;
+    repeated NodeMsg toRemove = 2;
+}
+
+message Registration {
+    NodeMsg fromNode = 1;
+    string key = 2;
+}
+
+message FetchedLocations {
+    bool isRoot = 1;
+    repeated NodeMsg values = 3;
+}
+
+message Neighbors {
+    repeated NodeMsg neighbors = 1;
+}
+
+message MulticastRequest {
+    NodeMsg newNode = 1;
+    int32 level = 2;
+}
+
+message TransferData {
+    NodeMsg from = 1;
+    map<string, Neighbors> data = 2;
+}
+
+message BackpointerRequest {
+    NodeMsg from = 1;
+    int32 level = 2;
+}
+
+message LeaveNotification {
+    NodeMsg from = 1;
+    NodeMsg replacement = 2;
+}
